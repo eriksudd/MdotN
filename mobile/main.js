@@ -18,23 +18,27 @@ class App extends React.Component {
       mealList: [],
       searchRecipes: [],
       fontLoaded: false,
+      spinner: false
     };
     this.getMealList = this.getMealList.bind(this);
     this.getToken = this.getToken.bind(this);
     this.getUserId = this.getUserId.bind(this);
     this.getSearchRecipes = this.getSearchRecipes.bind(this);
+    this.getSpinnerState = this.getSpinnerState.bind(this);
 
     this.updateMealList = this.updateMealList.bind(this);
     this.updateToken = this.updateToken.bind(this);
     this.updateUserId = this.updateUserId.bind(this);
     this.updateSearchRecipes = this.updateSearchRecipes.bind(this);
     this.renderScene = this.renderScene.bind(this);
+    this.renderSpinner = this.renderSpinner.bind(this);
   }
 
   getMealList() { return this.state.mealList; }
   getToken() { return this.state.token; }
   getUserId() { return this.state.userId; }
   getSearchRecipes() { return this.state.searchRecipes; }
+  getSpinnerState() { return this.state.spinner; }
 
   async componentDidMount() {
     await Font.loadAsync({
@@ -62,8 +66,14 @@ class App extends React.Component {
         updateToken={this.updateToken}
         updateUserId={this.updateUserId}
         updateSearchRecipes={this.updateSearchRecipes}
+        renderSpinner={this.renderSpinner}
+        getSpinnerState={this.getSpinnerState}
       />
     );
+  }
+
+  renderSpinner(flag) {
+    this.setState({spinner: flag});
   }
 
   render() {
@@ -74,7 +84,7 @@ class App extends React.Component {
         initialRoute={{ name: 'Login', component: Login }}
         renderScene={this.renderScene}
         configureScene={() => Navigator.SceneConfigs.FadeAndroid}
-        navigationBar={<NavBar navigator={this.navigator} getToken={this.getToken} />}
+        navigationBar={<NavBar navigator={this.navigator} getToken={this.getToken} renderSpinner={this.renderSpinner}/>}
       />
     );
   }

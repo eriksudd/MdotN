@@ -4,7 +4,8 @@ import MealTile from './MealTile';
 import Header from './Header';
 import ActionButton from './ActionButton'
 import IP from '../Utils/IP';
-import InfoDisplay from './InfoDisplay'
+import InfoDisplay from './InfoDisplay';
+import { Spinner } from 'native-base'
 
 const localUserUrl = IP.localUserUrl;
 const localMealUrl = IP.localMealUrl;
@@ -15,6 +16,7 @@ class MealList extends React.Component {
     this.getData = this.getData.bind(this);
     this.postMeal = this.postMeal.bind(this);
     this.gotoNext = this.gotoNext.bind(this);
+    console.log('props from MealList', props)
   }
 
   componentWillMount() {
@@ -61,28 +63,37 @@ class MealList extends React.Component {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Header title={'Meal.Next'}/>
-        <ScrollView
-          contentContainerStyle={styles.conatiner}
-          showsVerticalScrollIndicator={false}
-          alwaysBounceVertical
-        >
-          {this.props.getMealList().map((meal, i) => (
-            <MealTile
-              recipe={meal.recipe}
-              showInfo={() => this.gotoNext(meal.recipe)}
-              key={i}
-              mealId={meal._id} // eslint-disable-line no-underscore-dangle
-            />
-          ))}
-        </ScrollView>
+    if (this.props.getSpinnerState() === false) {
+      return (
+        <View style={styles.container}>
+          <Header title={'Meal.Next'}/>
+          <ScrollView
+            contentContainerStyle={styles.conatiner}
+            showsVerticalScrollIndicator={false}
+            alwaysBounceVertical
+          >
+            {this.props.getMealList().map((meal, i) => (
+              <MealTile
+                recipe={meal.recipe}
+                showInfo={() => this.gotoNext(meal.recipe)}
+                key={i}
+                mealId={meal._id} // eslint-disable-line no-underscore-dangle
+              />
+            ))}
+          </ScrollView>
 
-        <ActionButton navigator={this.props.navigator} />
+          <ActionButton navigator={this.props.navigator} />
 
-    </View>
-    );
+      </View>
+      );
+    } else {
+      return (
+        <View style={styles.spinner}>
+            <Text>Getting restaurant info...</Text>
+            <Spinner color='blue'/>
+        </View>
+      )
+    } 
   }
 };
 
@@ -110,6 +121,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 22,
     color: 'white',
+  },
+  spinner: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white'
   }
 });
 

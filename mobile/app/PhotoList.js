@@ -15,7 +15,7 @@ class PhotoList extends Component {
 
 	componentWillMount() {
 		const token = this.props.getToken();
-		utils.getPhotoList(token).then(photos => this.setState({ photos }));
+		utils.getPhotoList(token).then(photos => this.setState({ photos: photos.reverse() }));
 	}
 
 	render() {

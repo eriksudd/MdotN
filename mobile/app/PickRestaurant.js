@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import Header from './Header';
-import { Container, Content, List, ListItem, Thumbnail } from 'native-base';
+import { Container, Content, List, ListItem, Thumbnail, Spinner } from 'native-base';
 import utils from '../Utils/utils';
 import PickMenuItem from './PickMenuItem';
 import LogoTile from './LogoTile';
@@ -30,7 +30,8 @@ class PickRestaurant extends React.Component {
     this.state = {
       restaurants: []
     }
-   
+    
+    console.log(props, 'from pick restaurant')
   }
 
   componentWillMount() {
@@ -39,6 +40,7 @@ class PickRestaurant extends React.Component {
       let restaurants = logos.map( (logo, index) => { 
         return { logo: logo.value[0].contentUrl, name: this.props.restaurants[index] } 
       });
+      this.props.renderSpinner(false);
       this.setState({ restaurants });
     })
   }
@@ -46,27 +48,40 @@ class PickRestaurant extends React.Component {
 
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Header title={'Pick.Restaurant'} backBtn={true}/>
-        <ScrollView
-          contentContainerStyle={styles.conatiner}
-          showsVerticalScrollIndicator={false}
-          alwaysBounceVertical
-        >
+    if (this.props.getSpinnerState() === false) {
+      return (
+        <View style={styles.container}>
+          <Header title={'Pick.Restaurant'} backBtn={true}/>
+          <ScrollView
+            contentContainerStyle={styles.conatiner}
+            showsVerticalScrollIndicator={false}
+            alwaysBounceVertical
+          >
 
-            {this.state.restaurants.map( (restaurant, i) => (
-                <LogoTile 
-                  image={restaurant ? restaurant.logo : null} 
-                  key={i} 
-                  restaurant={restaurant} 
-                  onRestaurantPick={() => onRestaurantPick(this.props, restaurant)} >
-                </LogoTile>  
-            ))}
-        </ScrollView>
-        
-      </View>
-    );
+              {this.state.restaurants.map( (restaurant, i) => (
+                  <LogoTile 
+                    image={restaurant ? restaurant.logo : null} 
+                    key={i} 
+                    restaurant={restaurant} 
+                    onRestaurantPick={() => onRestaurantPick(this.props, restaurant)} >
+                  </LogoTile>  
+              ))}
+          </ScrollView>
+          
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          <Header title={'Pick.Restaurant'} backBtn={true}/>
+
+          <View style={styles.spinner}>
+            <Spinner color='blue'/>
+          </View>
+
+        </View>
+      )
+    }
   }
 }
 
@@ -93,5 +108,11 @@ const styles = StyleSheet.create({
   text: {
     paddingTop: 5,
     paddingBottom: 5
+  },
+  spinner: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white'
   }
 });

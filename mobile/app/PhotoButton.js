@@ -22,7 +22,7 @@ const PhotoButton = ({ text, icon, onclick }) => {
       <TouchableHighlight
         onPress={onclick} style={styles.photoCircle}
       >
-       <Ionicons name={icon} style={styles.photoButton} size={65} onPress={onclick} /> 
+       <Ionicons name={icon} style={styles.photoButton} size={55} onPress={onclick} /> 
       </TouchableHighlight>
   ) 
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { Block } from 'native-base';
 import Button from './Button';
@@ -22,32 +22,52 @@ const gotoNext = (navigator, restaurants, date, token) => {
   });
 }
 
-const handlePhotoBtnClick = (props, token) => {
-  utils.getLocationAsync().then(loc => {
-    utils.takePhotoAsync().then(photo => {
-      if (!photo.cancelled) {
-         const date = Date.now();
-         utils.postPhotoAndLocation(photo.uri, token, date, loc); 
-         utils.getRestaurants(loc.coords.latitude, loc.coords.longitude, token).then( restaurants => {
-            gotoNext(props.navigator, restaurants, date, token)
-         })
-      }
+
+
+
+class NavBar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {spinner: false}
+    console.log(props, 'props in navbar')
+  }
+
+  handlePhotoBtnClick(props, token) {
+    const self = this;
+
+    utils.getLocationAsync().then(loc => {
+      utils.takePhotoAsync().then(photo => {
+        if (!photo.cancelled) {
+           props.renderSpinner(true)
+           console.log(self.state.spinner);
+           const date = Date.now();
+           utils.postPhotoAndLocation(photo.uri, token, date, loc); 
+           utils.getRestaurants(loc.coords.latitude, loc.coords.longitude, token).then( restaurants => {
+              gotoNext(props.navigator, restaurants, date, token);
+           })
+        }
+      })
     })
-  })
-} 
+  } 
 
 
-const NavBar = (props) => {
-  if (props.navigator.getCurrentRoutes().length > 1) {
-    return (
-      <View style={styles.container}>
-          <Button icon="ios-list-box" onclick={() => moveTo(props.navigator, MealList)} />
-          <PhotoButton style={styles.PhotoButton} icon="md-camera" onclick={() => handlePhotoBtnClick(props, props.getToken())}/>
-        <Button icon="ios-images" onclick={() => moveTo(props.navigator, PhotoList, token)} />
-      </View>      
-    )    
-  } else {
-    return null;
+  render() {
+    if (this.props.navigator.getCurrentRoutes().length > 1) {
+      return (
+        <View style={styles.margin}>
+          <View style={styles.container}>
+            <Button style={styles.side} icon="ios-list-box" onclick={() => moveTo(this.props.navigator, MealList)} />
+            <PhotoButton icon="md-camera" onclick={() => this.handlePhotoBtnClick(this.props, this.props.getToken())}/>
+            <Button style={styles.side} icon="ios-images" onclick={() => moveTo(this.props.navigator, PhotoList, this.props.getToken())} />
+          </View>
+        </View>      
+      )    
+    } else if (this.state.spinner) {
+      return <View style={{flex: 1}}><Spinner color='blue'/></View>;
+    } else {
+      return null;
+    }
   }
 };
 
@@ -59,17 +79,15 @@ const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
-    width,
     height: 110,
     backgroundColor: 'white',
     borderColor: 'gray',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+    alignItems: 'center'
   },
-
-  PhotoButton: {
-    position: 'absolute',
-    top: 20
+  margin: {
+    marginTop: 5
   }
 });

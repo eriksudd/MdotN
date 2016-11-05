@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Dimensions, StyleSheet, AsyncStorage  } from 'react-native';
-import {Text, Header} from 'native-base';
 import { Font } from 'exponent';
 import { Title, Text, Header, Button} from 'native-base';
 
