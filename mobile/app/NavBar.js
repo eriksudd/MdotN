@@ -22,29 +22,27 @@ const gotoNext = (navigator, restaurants, date, token) => {
   });
 }
 
+const handlePhotoBtnClick = (props, token) => {
+  utils.getLocationAsync().then(loc => {
+    utils.takePhotoAsync().then(photo => {
+      if (!photo.cancelled) {
+         const date = Date.now();
+         utils.postPhotoAndLocation(photo.uri, token, date, loc); 
+         utils.getRestaurants(loc.coords.latitude, loc.coords.longitude, token).then( restaurants => {
+            gotoNext(props.navigator, restaurants, date, token)
+         })
+      }
+    })
+  })
+} 
 
 
 const NavBar = (props) => {
-  const token = props.getToken();
-
   if (props.navigator.getCurrentRoutes().length > 1) {
     return (
       <View style={styles.container}>
           <Button icon="ios-list-box" onclick={() => moveTo(props.navigator, MealList)} />
-          <PhotoButton style={styles.PhotoButton} icon="md-camera" onclick={() => {
-            utils.getLocationAsync().then(loc => {
-              utils.takePhotoAsync().then(photo => {
-                if (!photo.cancelled) {
-                   const date = Date.now();
-                   utils.postPhotoAndLocation(photo.uri, token, date, loc); 
-                   utils.getRestaurants(loc.coords.latitude, loc.coords.longitude, token).then( restaurants => {
-                      gotoNext(props.navigator, restaurants, date, token)
-                   })
-
-                }
-              })
-            })
-          }} />
+          <PhotoButton style={styles.PhotoButton} icon="md-camera" onclick={() => handlePhotoBtnClick(props, props.getToken())}/>
         <Button icon="ios-images" onclick={() => moveTo(props.navigator, PhotoList, token)} />
       </View>      
     )    

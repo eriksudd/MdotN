@@ -5,7 +5,7 @@ import { CardItem, Card } from 'native-base';
 const LogoTile = ({ image, onRestaurantPick }) => (
 
     <CardItem onPress={() => onRestaurantPick()} style={styles.card}>                       
-        <Image style={styles.picture} source={{ uri: image }} />
+        <Image resizeMode={Image.resizeMode.cover} style={styles.picture} source={{ uri: image }} />
     </CardItem>
 
 )
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   picture: {
-    height: 100,
-    width: 150
+    width: 350,
+    resizeMode: 'contain'
   }
 });

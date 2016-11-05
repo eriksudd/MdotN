@@ -48,7 +48,7 @@ class PickRestaurant extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header />
+        <Header title={'Pick.Restaurant'} backBtn={true}/>
         <ScrollView
           contentContainerStyle={styles.conatiner}
           showsVerticalScrollIndicator={false}

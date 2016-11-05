@@ -32,7 +32,6 @@ class MealList extends React.Component {
       }
     })
     .then((data) => {
-      console.log('DATA FROM MEALLIST', data)
       this.props.updateMealList(testData.mealsObjs);
     }).done(() => {
       if (cb) { cb(); }
